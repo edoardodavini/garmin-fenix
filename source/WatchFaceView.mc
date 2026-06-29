@@ -9,6 +9,8 @@ import Toybox.WatchUi;
 
 class WatchFaceView extends WatchUi.WatchFace {
 
+    var _isAwake as Lang.Boolean = true;
+
     function initialize() {
         WatchFace.initialize();
     }
@@ -17,6 +19,16 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
 
     function onShow() as Void {
+    }
+
+    function onEnterSleep() as Void {
+        _isAwake = false;
+        WatchUi.requestUpdate();
+    }
+
+    function onExitSleep() as Void {
+        _isAwake = true;
+        WatchUi.requestUpdate();
     }
 
     function onUpdate(dc as Graphics.Dc) as Void {
@@ -40,7 +52,9 @@ class WatchFaceView extends WatchUi.WatchFace {
 
         drawHourHand(dc, cx, cy, r, t.hour, t.min);
         drawMinuteHand(dc, cx, cy, r, t.min, t.sec);
-        drawSecondHand(dc, cx, cy, r, t.sec);
+        if (_isAwake) {
+            drawSecondHand(dc, cx, cy, r, t.sec);
+        }
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, cy, 4);

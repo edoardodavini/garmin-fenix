@@ -1,6 +1,7 @@
 import Toybox.Application;
 import Toybox.Graphics;
 import Toybox.Position;
+import Toybox.Sensor;
 import Toybox.Weather;
 import Toybox.Lang;
 import Toybox.Math;
@@ -45,6 +46,7 @@ class WatchFaceView extends WatchUi.WatchFace {
 
         // Digital time drawn first — sits behind everything as background element
         drawDigitalBar(dc, cx, cy, r, t.hour, t.min);
+        drawInsights(dc, cx, cy, r);
 
         drawDayProgress(dc, cx, cy, r);
         drawTicks(dc, cx, cy, r);
@@ -180,6 +182,30 @@ class WatchFaceView extends WatchUi.WatchFace {
             dc.drawText(x, y, Graphics.FONT_XTINY, labels[i],
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
+    }
+
+    hidden function drawInsights(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number) as Void {
+        dc.setColor(0x505050, Graphics.COLOR_TRANSPARENT);
+
+        // Temperature
+        var tempStr = "--°C";
+        var conditions = Weather.getCurrentConditions();
+        if (conditions != null && conditions.temperature != null) {
+            tempStr = conditions.temperature.format("%d") + "°C";
+        }
+        dc.drawText(cx, cy + (r * 0.72).toNumber(),
+            Graphics.FONT_XTINY, tempStr,
+            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        // Altitude
+        var altStr = "--m";
+        var sensorInfo = Sensor.getInfo();
+        if (sensorInfo != null && sensorInfo.altitude != null) {
+            altStr = sensorInfo.altitude.format("%d") + "m";
+        }
+        dc.drawText(cx, cy + (r * 0.83).toNumber(),
+            Graphics.FONT_XTINY, altStr,
+            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     hidden function drawDigitalBar(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, hours as Lang.Number, minutes as Lang.Number) as Void {

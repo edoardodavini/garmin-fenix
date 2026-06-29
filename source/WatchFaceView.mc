@@ -127,8 +127,8 @@ class WatchFaceView extends WatchUi.WatchFace {
         var info = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         var dateStr = dayNames[info.day_of_week - 1] + " " + info.day.format("%d");
         dc.setColor(0x303030, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, cy + (r * 0.30).toNumber(),
-            Graphics.FONT_TINY, dateStr,
+        dc.drawText(cx, cy + (r * 0.62).toNumber(),
+            Graphics.FONT_XTINY, dateStr,
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 }

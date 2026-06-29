@@ -46,9 +46,9 @@ class WatchFaceView extends WatchUi.WatchFace {
 
         // Digital time drawn first — sits behind everything as background element
         drawDigitalBar(dc, cx, cy, r, t.hour, t.min);
-        drawInsights(dc, cx, cy, r);
 
-        drawDayProgress(dc, cx, cy, r);
+        try { drawInsights(dc, cx, cy, r); }     catch (e instanceof Lang.Exception) {}
+        try { drawDayProgress(dc, cx, cy, r); }  catch (e instanceof Lang.Exception) {}
         drawTicks(dc, cx, cy, r);
 
         var numberStyle = Application.getApp().getProperty("NumberStyle") as Lang.Number;
@@ -191,7 +191,7 @@ class WatchFaceView extends WatchUi.WatchFace {
         var tempStr = "--°C";
         var conditions = Weather.getCurrentConditions();
         if (conditions != null && conditions.temperature != null) {
-            tempStr = conditions.temperature.format("%d") + "°C";
+            tempStr = conditions.temperature.toNumber().format("%d") + "°C";
         }
         dc.drawText(cx, cy + (r * 0.72).toNumber(),
             Graphics.FONT_XTINY, tempStr,
@@ -201,7 +201,7 @@ class WatchFaceView extends WatchUi.WatchFace {
         var altStr = "--m";
         var sensorInfo = Sensor.getInfo();
         if (sensorInfo != null && sensorInfo.altitude != null) {
-            altStr = sensorInfo.altitude.format("%d") + "m";
+            altStr = sensorInfo.altitude.toNumber().format("%d") + "m";
         }
         dc.drawText(cx, cy + (r * 0.83).toNumber(),
             Graphics.FONT_XTINY, altStr,

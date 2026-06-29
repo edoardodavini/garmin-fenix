@@ -2,6 +2,8 @@ import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Math;
 import Toybox.System;
+import Toybox.Time;
+import Toybox.Time.Gregorian;
 import Toybox.WatchUi;
 
 class WatchFaceView extends WatchUi.WatchFace {
@@ -33,6 +35,8 @@ class WatchFaceView extends WatchUi.WatchFace {
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, cy, 4);
+
+        drawDigitalBar(dc, cx, cy, r, t.hour, t.min);
     }
 
     function onHide() as Void {
@@ -85,5 +89,33 @@ class WatchFaceView extends WatchUi.WatchFace {
             cy - (tailLen * Math.sin(angleRad)).toNumber(),
             cx + (len * Math.cos(angleRad)).toNumber(),
             cy + (len * Math.sin(angleRad)).toNumber());
+    }
+
+    hidden function drawDigitalBar(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, hours as Lang.Number, minutes as Lang.Number) as Void {
+        var barW = (r * 0.90).toNumber();
+        var barH = (r * 0.22).toNumber();
+        var barX = cx - barW / 2;
+        var barY = (cy + r * 0.55).toNumber();
+
+        // Background fill + border
+        dc.setColor(0x1A1A1A, 0x1A1A1A);
+        dc.fillRoundedRectangle(barX, barY, barW, barH, 6);
+        dc.setColor(0x333333, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(1);
+        dc.drawRoundedRectangle(barX, barY, barW, barH, 6);
+
+        // HH:MM — centered, white
+        var timeStr = hours.format("%02d") + ":" + minutes.format("%02d");
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, barY + (barH * 0.08).toNumber(),
+            Graphics.FONT_SMALL, timeStr, Graphics.TEXT_JUSTIFY_CENTER);
+
+        // EEE DD — centered, grey, smaller
+        var dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] as Lang.Array<Lang.String>;
+        var info = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        var dateStr = dayNames[info.day_of_week - 1] + " " + info.day.format("%d");
+        dc.setColor(0x888888, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, barY + (barH * 0.58).toNumber(),
+            Graphics.FONT_XTINY, dateStr, Graphics.TEXT_JUSTIFY_CENTER);
     }
 }

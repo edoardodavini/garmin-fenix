@@ -1,0 +1,9 @@
+<settings>
+    <setting propertyKey="@Properties.NumberStyle" title="@Strings.NumberStyleTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.NumberStyleNone</listEntry>
+            <listEntry value="1">@Strings.NumberStyleRoman</listEntry>
+            <listEntry value="2">@Strings.NumberStyleArabic</listEntry>
+        </settingConfig>
+    </setting>
+</settings>

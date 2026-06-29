@@ -1,3 +1,4 @@
+import Toybox.Application;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Math;
@@ -27,6 +28,10 @@ class WatchFaceView extends WatchUi.WatchFace {
         dc.clear();
 
         drawTicks(dc, cx, cy, r);
+
+        var numberStyle = Application.getApp().getProperty("NumberStyle") as Lang.Number;
+        if (numberStyle == null) { numberStyle = 0; }
+        drawNumbers(dc, cx, cy, r, numberStyle);
 
         var t = System.getClockTime();
         drawHourHand(dc, cx, cy, r, t.hour, t.min);
@@ -89,6 +94,22 @@ class WatchFaceView extends WatchUi.WatchFace {
             cy - (tailLen * Math.sin(angleRad)).toNumber(),
             cx + (len * Math.cos(angleRad)).toNumber(),
             cy + (len * Math.sin(angleRad)).toNumber());
+    }
+
+    hidden function drawNumbers(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, style as Lang.Number) as Void {
+        if (style == 0) { return; }
+        var roman   = ["XII", "III", "VI", "IX"] as Lang.Array<Lang.String>;
+        var arabic  = ["12",  "3",   "6",  "9"]  as Lang.Array<Lang.String>;
+        var labels  = (style == 1) ? roman : arabic;
+        var numR    = (r * 0.70).toNumber();
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        for (var i = 0; i < 4; i++) {
+            var angleRad = (i * 90 - 90) * Math.PI / 180.0;
+            var x = cx + (numR * Math.cos(angleRad)).toNumber();
+            var y = cy + (numR * Math.sin(angleRad)).toNumber();
+            dc.drawText(x, y, Graphics.FONT_XTINY, labels[i],
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
     }
 
     hidden function drawDigitalBar(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, hours as Lang.Number, minutes as Lang.Number) as Void {

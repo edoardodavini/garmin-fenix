@@ -46,8 +46,8 @@ class WatchFaceView extends WatchUi.WatchFace {
         // Digital time drawn first — sits behind everything as background element
         drawDigitalBar(dc, cx, cy, r, t.hour, t.min);
 
+        drawDayProgress(dc, cx, cy, r);
         drawTicks(dc, cx, cy, r);
-        drawSunArc(dc, cx, cy, r);
 
         var numberStyle = Application.getApp().getProperty("NumberStyle") as Lang.Number;
         if (numberStyle == null) { numberStyle = 0; }
@@ -115,33 +115,55 @@ class WatchFaceView extends WatchUi.WatchFace {
             cy + (len * Math.sin(angleRad)).toNumber());
     }
 
-    hidden function drawSunArc(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number) as Void {
+    hidden function drawDayProgress(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number) as Void {
+        // Default sunrise/sunset if weather data unavailable
+        var riseH = 6.0;
+        var setH  = 20.0;
+
         var conditions = Weather.getCurrentConditions();
-        if (conditions == null) { return; }
-        var location = conditions.observationLocationPosition;
-        if (location == null) { return; }
+        if (conditions != null) {
+            var loc = conditions.observationLocationPosition;
+            if (loc != null) {
+                var now     = Time.now();
+                var sunrise = Weather.getSunrise(loc, now);
+                var sunset  = Weather.getSunset(loc, now);
+                if (sunrise != null) {
+                    var ri = Gregorian.info(sunrise, Time.FORMAT_SHORT);
+                    riseH = ri.hour + ri.min / 60.0;
+                }
+                if (sunset != null) {
+                    var si = Gregorian.info(sunset, Time.FORMAT_SHORT);
+                    setH = si.hour + si.min / 60.0;
+                }
+            }
+        }
 
-        var now     = Time.now();
-        var sunrise = Weather.getSunrise(location, now);
-        var sunset  = Weather.getSunset(location, now);
-        if (sunrise == null || sunset == null) { return; }
+        var t    = System.getClockTime();
+        var nowH = t.hour + t.min / 60.0;
 
-        var riseInfo = Gregorian.info(sunrise, Time.FORMAT_SHORT);
-        var setInfo  = Gregorian.info(sunset,  Time.FORMAT_SHORT);
-        var riseH    = (riseInfo.hour % 12) + riseInfo.min / 60.0;
-        var setH     = (setInfo.hour  % 12) + setInfo.min  / 60.0;
+        // Map 0-24h to arc angle: midnight=150°, noon=90°, next midnight=30°
+        // 5° per hour across a 120° arc in the upper face
+        var arcR    = (r * 0.55).toNumber();
+        var riseAng = (150.0 - riseH * 5.0).toNumber();
+        var setAng  = (150.0 - setH  * 5.0).toNumber();
+        var nowAng  = (150.0 - nowH  * 5.0).toNumber();
 
-        // Convert clock time to CIQ drawArc angle (0=3oclock, 90=noon, CCW positive)
-        var riseAngle = (90.0 - riseH * 30.0).toNumber();
-        var setAngle  = (90.0 - setH  * 30.0).toNumber();
+        // Dim full-day background arc
+        dc.setColor(0x282828, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(2);
+        dc.drawArc(cx, cy, arcR, Graphics.ARC_CLOCKWISE, 150, 30);
 
-        // ARC_CLOCKWISE from min to max always passes through 90° (noon)
-        var arcStart = riseAngle < setAngle ? riseAngle : setAngle;
-        var arcEnd   = riseAngle < setAngle ? setAngle  : riseAngle;
-
+        // Yellow daylight arc (sunrise to sunset)
         dc.setColor(0xFFCC00, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
-        dc.drawArc(cx, cy, (r * 0.80).toNumber(), Graphics.ARC_CLOCKWISE, arcStart, arcEnd);
+        dc.drawArc(cx, cy, arcR, Graphics.ARC_CLOCKWISE, riseAng, setAng);
+
+        // White dot at current time
+        var dotRad = nowAng * Math.PI / 180.0;
+        var dotX   = cx + (arcR * Math.cos(dotRad)).toNumber();
+        var dotY   = cy - (arcR * Math.sin(dotRad)).toNumber();
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(dotX, dotY, 3);
     }
 
     hidden function drawNumbers(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, style as Lang.Number) as Void {

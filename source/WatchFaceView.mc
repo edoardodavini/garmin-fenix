@@ -1,7 +1,7 @@
 import Toybox.Application;
 import Toybox.Graphics;
+import Toybox.Activity;
 import Toybox.Position;
-import Toybox.Sensor;
 import Toybox.Weather;
 import Toybox.Lang;
 import Toybox.Math;
@@ -199,9 +199,9 @@ class WatchFaceView extends WatchUi.WatchFace {
 
         // Altitude
         var altStr = "--m";
-        var sensorInfo = Sensor.getInfo();
-        if (sensorInfo != null && sensorInfo.altitude != null) {
-            altStr = sensorInfo.altitude.toNumber().format("%d") + "m";
+        var actInfo = Activity.getActivityInfo();
+        if (actInfo != null && actInfo.altitude != null) {
+            altStr = actInfo.altitude.toNumber().format("%d") + "m";
         }
         dc.drawText(cx, cy + (r * 0.83).toNumber(),
             Graphics.FONT_XTINY, altStr,

@@ -94,7 +94,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     hidden function drawDigitalBar(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, hours as Lang.Number, minutes as Lang.Number) as Void {
         var barW = (r * 0.90).toNumber();
         var barH = (r * 0.22).toNumber();
-        var barX = cx - barW / 2;
+        var barX = (cx - barW / 2).toNumber();
         var barY = (cy + r * 0.55).toNumber();
 
         // Background fill + border

@@ -88,9 +88,9 @@ class WatchFaceView extends WatchUi.WatchFace {
         var a    = ((hours % 12) + minutes / 60.0) * 30.0 * Math.PI / 180.0 - Math.PI / 2.0;
         var cosA = Math.cos(a);
         var sinA = Math.sin(a);
-        var len  = (r * 0.44).toNumber();
+        var len  = (r * 0.52).toNumber();
         var shld = (r * 0.08).toNumber();
-        var tail = (r * 0.08).toNumber();
+        var tail = (r * 0.10).toNumber();
         var hw   = 8;
         var tipX  = cx + (len  * cosA).toNumber();
         var tipY  = cy + (len  * sinA).toNumber();
@@ -100,21 +100,22 @@ class WatchFaceView extends WatchUi.WatchFace {
         var tailY = cy - (tail * sinA).toNumber();
         var pxN   = (hw * (-sinA)).toNumber();
         var pyN   = (hw * cosA).toNumber();
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(tipX, tipY, shldX + pxN, shldY + pyN);
+        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(shldX + pxN, shldY + pyN, tailX, tailY);
         dc.drawLine(tailX, tailY, shldX - pxN, shldY - pyN);
-        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
     }
 
     hidden function drawMinuteHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, minutes as Lang.Number, seconds as Lang.Number) as Void {
         var a    = (minutes + seconds / 60.0) * 6.0 * Math.PI / 180.0 - Math.PI / 2.0;
         var cosA = Math.cos(a);
         var sinA = Math.sin(a);
-        var len  = (r * 0.62).toNumber();
+        var len  = (r * 0.72).toNumber();
         var shld = (r * 0.08).toNumber();
-        var tail = (r * 0.10).toNumber();
+        var tail = (r * 0.12).toNumber();
         var hw   = 5;
         var tipX  = cx + (len  * cosA).toNumber();
         var tipY  = cy + (len  * sinA).toNumber();
@@ -124,12 +125,13 @@ class WatchFaceView extends WatchUi.WatchFace {
         var tailY = cy - (tail * sinA).toNumber();
         var pxN   = (hw * (-sinA)).toNumber();
         var pyN   = (hw * cosA).toNumber();
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(tipX, tipY, shldX + pxN, shldY + pyN);
+        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(shldX + pxN, shldY + pyN, tailX, tailY);
         dc.drawLine(tailX, tailY, shldX - pxN, shldY - pyN);
-        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
     }
 
     hidden function drawSecondHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, seconds as Lang.Number) as Void {

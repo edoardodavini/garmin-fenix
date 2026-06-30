@@ -101,7 +101,11 @@ class WatchFaceView extends WatchUi.WatchFace {
         var pxN   = (hw * (-sinA)).toNumber();
         var pyN   = (hw * cosA).toNumber();
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.fillPolygon([[tipX, tipY], [shldX + pxN, shldY + pyN], [tailX, tailY], [shldX - pxN, shldY - pyN]]);
+        dc.setPenWidth(2);
+        dc.drawLine(tipX, tipY, shldX + pxN, shldY + pyN);
+        dc.drawLine(shldX + pxN, shldY + pyN, tailX, tailY);
+        dc.drawLine(tailX, tailY, shldX - pxN, shldY - pyN);
+        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
     }
 
     hidden function drawMinuteHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, minutes as Lang.Number, seconds as Lang.Number) as Void {
@@ -121,7 +125,11 @@ class WatchFaceView extends WatchUi.WatchFace {
         var pxN   = (hw * (-sinA)).toNumber();
         var pyN   = (hw * cosA).toNumber();
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.fillPolygon([[tipX, tipY], [shldX + pxN, shldY + pyN], [tailX, tailY], [shldX - pxN, shldY - pyN]]);
+        dc.setPenWidth(2);
+        dc.drawLine(tipX, tipY, shldX + pxN, shldY + pyN);
+        dc.drawLine(shldX + pxN, shldY + pyN, tailX, tailY);
+        dc.drawLine(tailX, tailY, shldX - pxN, shldY - pyN);
+        dc.drawLine(shldX - pxN, shldY - pyN, tipX, tipY);
     }
 
     hidden function drawSecondHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, seconds as Lang.Number) as Void {

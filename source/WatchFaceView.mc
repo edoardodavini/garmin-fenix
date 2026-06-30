@@ -39,6 +39,7 @@ class WatchFaceView extends WatchUi.WatchFace {
         var cy = dc.getHeight() / 2;
         var r  = cx;
 
+        dc.setAntiAlias(true);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
 

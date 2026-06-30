@@ -85,23 +85,43 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
 
     hidden function drawHourHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, hours as Lang.Number, minutes as Lang.Number) as Void {
-        var angleRad = ((hours % 12) + minutes / 60.0) * 30.0 * Math.PI / 180.0 - Math.PI / 2.0;
-        var len = (r * 0.40).toNumber();
+        var a    = ((hours % 12) + minutes / 60.0) * 30.0 * Math.PI / 180.0 - Math.PI / 2.0;
+        var cosA = Math.cos(a);
+        var sinA = Math.sin(a);
+        var len  = (r * 0.44).toNumber();
+        var shld = (r * 0.08).toNumber();
+        var tail = (r * 0.08).toNumber();
+        var hw   = 8;
+        var tipX  = cx + (len  * cosA).toNumber();
+        var tipY  = cy + (len  * sinA).toNumber();
+        var shldX = cx + (shld * cosA).toNumber();
+        var shldY = cy + (shld * sinA).toNumber();
+        var tailX = cx - (tail * cosA).toNumber();
+        var tailY = cy - (tail * sinA).toNumber();
+        var pxN   = (hw * (-sinA)).toNumber();
+        var pyN   = (hw * cosA).toNumber();
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(4);
-        dc.drawLine(cx, cy,
-            cx + (len * Math.cos(angleRad)).toNumber(),
-            cy + (len * Math.sin(angleRad)).toNumber());
+        dc.fillPolygon([[tipX, tipY], [shldX + pxN, shldY + pyN], [tailX, tailY], [shldX - pxN, shldY - pyN]]);
     }
 
     hidden function drawMinuteHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, minutes as Lang.Number, seconds as Lang.Number) as Void {
-        var angleRad = (minutes + seconds / 60.0) * 6.0 * Math.PI / 180.0 - Math.PI / 2.0;
-        var len = (r * 0.60).toNumber();
+        var a    = (minutes + seconds / 60.0) * 6.0 * Math.PI / 180.0 - Math.PI / 2.0;
+        var cosA = Math.cos(a);
+        var sinA = Math.sin(a);
+        var len  = (r * 0.62).toNumber();
+        var shld = (r * 0.08).toNumber();
+        var tail = (r * 0.10).toNumber();
+        var hw   = 5;
+        var tipX  = cx + (len  * cosA).toNumber();
+        var tipY  = cy + (len  * sinA).toNumber();
+        var shldX = cx + (shld * cosA).toNumber();
+        var shldY = cy + (shld * sinA).toNumber();
+        var tailX = cx - (tail * cosA).toNumber();
+        var tailY = cy - (tail * sinA).toNumber();
+        var pxN   = (hw * (-sinA)).toNumber();
+        var pyN   = (hw * cosA).toNumber();
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(3);
-        dc.drawLine(cx, cy,
-            cx + (len * Math.cos(angleRad)).toNumber(),
-            cy + (len * Math.sin(angleRad)).toNumber());
+        dc.fillPolygon([[tipX, tipY], [shldX + pxN, shldY + pyN], [tailX, tailY], [shldX - pxN, shldY - pyN]]);
     }
 
     hidden function drawSecondHand(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number, r as Lang.Number, seconds as Lang.Number) as Void {

@@ -1,3 +1,5 @@
 developer_key.*
 bin/
 .superpowers/
+.history
+.DS_Store

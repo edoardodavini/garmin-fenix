@@ -1,7 +1,3 @@
 <strings>
     <string id="AppName">Edo Watchface</string>
-    <string id="NumberStyleTitle">Hour Numbers</string>
-    <string id="NumberStyleNone">None</string>
-    <string id="NumberStyleRoman">Roman</string>
-    <string id="NumberStyleArabic">Arabic</string>
 </strings>
